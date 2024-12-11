@@ -61,7 +61,32 @@ class Course(models.Model):
     @property
     def is_published(self):
         return self.status == PublishStatus.PUBLISHED
-    
+
+class Lesson(models.Model):
+    course = models.ForeignKey(Course, on_delete=models.CASCADE)
+    title = models.CharField(max_length=120)
+    description = models.TextField(blank=True, null=True)
+    thumbnail = CloudinaryField("image", 
+                tags = ['thumbnail', 'lesson'],
+                blank=True, null=True)
+    video = CloudinaryField("video",             
+            blank=True, 
+            null=True, 
+            type='private',
+            tags = ['video', 'lesson'],
+            resource_type='video')
+    order = models.IntegerField(default=0)
+    can_preview = models.BooleanField(default=False, help_text="If user does not have access to course, can they see this?")
+    status = models.CharField(
+        max_length=10, 
+        choices=PublishStatus.choices,
+        default=PublishStatus.PUBLISHED
+    )
+    timestamp = models.DateTimeField(auto_now_add=True)
+    updated = models.DateTimeField(auto_now=True)
+
+    class Meta:
+        ordering = ['order','-updated']
 
 """
 - Lessons
