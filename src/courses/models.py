@@ -1,7 +1,8 @@
-from django.db import models
+import uuid
 import helpers
+from django.db import models
+from django.utils.text import slugify
 from cloudinary.models import CloudinaryField
-
 
 helpers.cloudinary_init()
 
@@ -17,12 +18,50 @@ class PublishStatus(models.TextChoices):
 def handle_upload(instance, filename):
     return f"{filename}"
 
+def generate_public_id(instance, *args, **kwargs):
+    title = instance.title
+    unique_id = str(uuid.uuid4()).replace("-", "")
+    if not title:
+        return unique_id
+    slug = slugify(title)
+    unique_id_short = unique_id[:5]
+    return f"{slug}-{unique_id_short}"
+
+def get_public_id_prefix(instance, *args, **kwargs):
+    if hasattr(instance, 'path'):
+        path = instance.path
+        if path.startswith("/"):
+            path = path[1:]
+        if path.endswith('/'):
+            path = path[:-1]
+        return path
+    public_id = instance.public_id
+    model_class = instance.__class__
+    model_name = model_class.__name__
+    model_name_slug = slugify(model_name)
+    if not public_id:
+        return f"{model_name_slug}"
+    return f"{model_name_slug}/{public_id}"
+
+def get_display_name(instance, *args, **kwargs):
+    if hasattr(instance, 'get_display_name'):
+        return instance.get_display_name()
+    elif hasattr(instance, 'title'):
+        return instance.title
+    model_class = instance.__class__
+    model_name = model_class.__name__
+    return f"{model_name} Upload"
+
 class Course(models.Model):
     title = models.CharField(max_length=120)
     description = models.TextField(blank=True, null=True)
+    public_id = models.CharField(max_length=130, blank=True, null=True, db_index=True)
     image = CloudinaryField(
         "image", 
-        null=True
+        null=True,
+        public_id_prefix=get_public_id_prefix,
+        display_name=get_display_name,
+        tags=["course", "thumbnail"]
     )
     access = models.CharField(
         max_length=5, 
@@ -34,6 +73,23 @@ class Course(models.Model):
         choices=PublishStatus.choices,
         default=PublishStatus.DRAFT
         )
+
+    timestamp = models.DateTimeField(auto_now_add=True)
+    updated = models.DateTimeField(auto_now=True)
+
+    def save(self, *args, **kwargs):
+        # before save
+        if self.public_id == "" or self.public_id is None:
+            self.public_id = generate_public_id(self)
+        super().save(*args, **kwargs)
+        # after save
+    
+    def get_absolute_url(self):
+        return self.path
+    
+    @property
+    def path(self):
+        return f"/courses/{self.public_id}"
 
     def get_display_name(self):
         return f"{self.title} - Course"
@@ -64,6 +120,7 @@ class Course(models.Model):
 
 class Lesson(models.Model):
     course = models.ForeignKey(Course, on_delete=models.CASCADE)
+    public_id = models.CharField(max_length=130, blank=True, null=True, db_index=True)
     title = models.CharField(max_length=120)
     description = models.TextField(blank=True, null=True)
     thumbnail = CloudinaryField("image", 
@@ -87,6 +144,22 @@ class Lesson(models.Model):
 
     class Meta:
         ordering = ['order','-updated']
+    
+    def save(self, *args, **kwargs):
+        # before save
+        if self.public_id == "" or self.public_id is None:
+            self.public_id = generate_public_id(self)
+        super().save(*args, **kwargs)
+    
+    def get_absolute_url(self):
+        return self.path
+
+    @property
+    def path(self):
+        course_path = self.course.path
+        if course_path.endswith("/"):
+            course_path = course_path[:-1]
+        return f"{course_path}/lessons/{self.public_id}"
 
 """
 - Lessons
