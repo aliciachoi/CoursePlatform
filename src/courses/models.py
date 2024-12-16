@@ -124,9 +124,13 @@ class Lesson(models.Model):
     title = models.CharField(max_length=120)
     description = models.TextField(blank=True, null=True)
     thumbnail = CloudinaryField("image", 
+                public_id_prefix=get_public_id_prefix,
+                display_name=get_display_name,
                 tags = ['thumbnail', 'lesson'],
                 blank=True, null=True)
-    video = CloudinaryField("video",             
+    video = CloudinaryField("video",
+            public_id_prefix=get_public_id_prefix,
+            display_name=get_display_name,                   
             blank=True, 
             null=True, 
             type='private',
@@ -160,6 +164,29 @@ class Lesson(models.Model):
         if course_path.endswith("/"):
             course_path = course_path[:-1]
         return f"{course_path}/lessons/{self.public_id}"
+
+    def get_display_name(self):
+        return f"{self.title} - {self.course.get_display_name()}"
+
+    def get_thumbnail(self):
+        width = 382
+        if self.thumbnail:
+            return helpers.get_cloudinary_image_object(
+                self, 
+                field_name='thumbnail',
+                format='jpg',
+                as_html=False,
+                width=width
+            )
+        elif self.video:
+            return helpers.get_cloudinary_image_object(
+            self, 
+            field_name='video',
+            format='jpg',
+            as_html=False,
+            width=width
+        )
+        return 
 
 """
 - Lessons
