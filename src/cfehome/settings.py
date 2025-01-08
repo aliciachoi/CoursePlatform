@@ -72,6 +72,7 @@ INSTALLED_APPS = [
     "tailwind",
     # internal
     "courses",
+    "emails"
 ]
 
 MIDDLEWARE = [
