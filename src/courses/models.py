@@ -165,6 +165,10 @@ class Lesson(models.Model):
             course_path = course_path[:-1]
         return f"{course_path}/lessons/{self.public_id}"
 
+    @property
+    def requires_email(self):
+        return self.course.access == AccessRequirement.EMAIL_REQUIRED
+
     def get_display_name(self):
         return f"{self.title} - {self.course.get_display_name()}"
 
@@ -195,13 +199,5 @@ class Lesson(models.Model):
             width=width
         )
         return 
-
-"""
-- Lessons
-    - Title
-    - Description
-    - Video
-    - Status: Published, Coming Soon, Draft
-"""
 
 

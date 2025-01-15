@@ -6,6 +6,7 @@ from emails.models import Email, EmailVerificationEvent
 from emails.forms import EmailForm
 
 EMAIL_ADDRESS = settings.EMAIL_ADDRESS
+
 def home_view(request, *args, **kwargs):
     template_name = "home.html"
     # request POST data
