@@ -29,3 +29,18 @@
 * Foreign key relationships for course-lesson structure
 * Session-based email verification system
 * HTMX-driven dynamic form handling
+  
+## Screenshots
+<img width="1420" alt="Home page" src="https://github.com/user-attachments/assets/c39f9c8f-484d-4df6-a8cb-861ac7af0aaf" />
+<img width="1457" alt="Courses List" src="https://github.com/user-attachments/assets/d30900d4-8868-48da-8ffc-314f60e9bd91" />
+<img width="1353" alt="Sign in" src="https://github.com/user-attachments/assets/925486c4-e3d9-4450-bc87-47c4a66c7a56" />
+<img width="1406" alt="Sign in confirmation" src="https://github.com/user-attachments/assets/a1aa5bd2-01c5-4ab8-a86e-342de3ceb54c" />
+<img width="1397" alt="Logout" src="https://github.com/user-attachments/assets/fc593728-48be-4394-9c33-7ea3c581cab4" />
+<img width="846" alt="Email Verification" src="https://github.com/user-attachments/assets/c602a436-8ad4-40fd-abbb-282bbb334e08" />
+<img width="1495" alt="Admin page" src="https://github.com/user-attachments/assets/b2e65f82-48aa-477e-8027-e60d50596753" />
+<img width="1477" alt="Courses Management" src="https://github.com/user-attachments/assets/93155eb7-ee79-46a4-b3ac-a7c8ba3942df" />
+<img width="1507" alt="Email Verification Event" src="https://github.com/user-attachments/assets/2c529065-86a9-492e-9052-cd1293203a73" />
+
+
+
+
