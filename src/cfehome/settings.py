@@ -33,7 +33,7 @@ SECRET_KEY = 'django-insecure-(sew3nuk2jj%st+%mpwzzr=5^ap=5_@baxcx!n9!9i(^$dzyqn
 
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['courseplatform-fm2x.onrender.com']
 
 INSTALLED_APPS = [
     'django.contrib.admin',
