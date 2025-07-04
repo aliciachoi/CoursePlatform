@@ -5,6 +5,7 @@
   },
   "devDependencies": {
     "cross-env": "^7.0.3",
+    "postcss-simple-vars": "^7.0.1",
     "rimraf": "^6.0.1"
   }
 }
